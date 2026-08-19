@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/ai_config.dart';
 import '../../providers/settings_provider.dart';
+import '../../services/connection_test_service.dart';
 import '../theme/app_theme.dart';
+import '../widgets/connection_status.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
@@ -163,22 +165,44 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // Model Selection Dropdown / Freeform Field
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _modelNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Model Identifier',
-                            hintText: 'e.g. gpt-4o, claude-3-5-sonnet-20240620',
-                            prefixIcon: Icon(Icons.psychology_outlined),
-                          ),
-                        ),
-                      ),
-                    ],
+                  // Connection Test Button
+                  ConnectionStatusWidget(
+                    config: AIModelConfig(
+                      provider: _selectedProvider,
+                      modelName: _modelNameController.text.trim(),
+                      apiKey: _apiKeyController.text.trim(),
+                      baseUrl: _baseUrlController.text.trim(),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Model Selection Dropdown
+                  DropdownButtonFormField<String>(
+                    value: _modelNameController.text.trim().isEmpty 
+                        ? _selectedProvider.defaultModels.first 
+                        : _modelNameController.text.trim(),
+                    decoration: const InputDecoration(
+                      labelText: 'Select Model',
+                      prefixIcon: Icon(Icons.psychology_outlined),
+                    ),
+                    dropdownColor: AppTheme.cardDark,
+                    items: _selectedProvider.defaultModels.map((model) {
+                      return DropdownMenuItem<String>(
+                        value: model,
+                        child: Text(model),
+                      );
+                    }).toList(),
+                    onChanged: (model) {
+                      if (model != null) {
+                        setState(() {
+                          _modelNameController.text = model;
+                        });
+                      }
+                    },
                   ),
                   const SizedBox(height: 8),
+
+                  // Model Choice Chips
                   Wrap(
                     spacing: 6,
                     children: _selectedProvider.defaultModels.map((m) {
