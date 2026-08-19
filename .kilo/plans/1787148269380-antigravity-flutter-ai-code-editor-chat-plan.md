@@ -178,6 +178,29 @@ lib/
      - Upload `build/web` as artifact or deploy to GitHub Pages
 6. Verify workflow runs successfully in GitHub Actions tab.
 
+### Step 13: Flutter APK Build GitHub Actions Workflow
+Create `.github/workflows/flutter_apk_build.yml` for Android APK generation:
+1. **Trigger**: push to main, pull requests
+2. **Job**: `build-apk`
+3. **Runner**: `ubuntu-latest`
+4. **Steps**:
+   - `actions/checkout@v4`
+   - `subosito/flutter-action@v2` with `channel: stable` and `flutter-version: "3.27.4"`
+   - `flutter config --enable-android`
+   - `flutter pub get`
+   - `flutter build apk --release`
+   - **Verification step**: `ls -R build/app/outputs` to confirm APK location
+   - `actions/upload-artifact@v4` with:
+     - `name: android-apk`
+     - `path: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/apk/release/app-release.apk`
+     - `retention-days: 14`
+5. **Troubleshooting**: If artifact is ZIP instead of APK, check workflow logs for actual APK path and update artifact path accordingly.
+6. Verify workflow uploads actual APK artifact in GitHub Actions run.
+
+**Status**: Completed and pushed to GitHub.
+
 ---
 
 ## 6. Validation & Testing Plan
