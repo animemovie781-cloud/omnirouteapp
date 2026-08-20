@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../models/project_folder.dart';
 import '../../providers/project_provider.dart';
 import '../../services/file_system_service.dart';
@@ -176,7 +177,8 @@ class _ProjectScreenState extends ConsumerState<ProjectScreen> {
                 Navigator.pop(context);
                 setState(() => _isCreating = true);
                 try {
-                  final project = await _fileSystem.createFolder(name, '/home/user/projects');
+                  final baseDir = await getApplicationDocumentsDirectory();
+                  final project = await _fileSystem.createFolder(name, baseDir.path);
                   ref.read(projectProvider.notifier).setCurrentProject(project);
                   _navigateToEditor();
                 } catch (e) {
@@ -229,7 +231,7 @@ class _ProjectScreenState extends ConsumerState<ProjectScreen> {
                   ref.read(projectProvider.notifier).setCurrentProject(project);
                   _navigateToEditor();
                 } catch (e) {
-                  _showError('Failed to open folder: $e');
+                  _showError('Failed to open folder: $e\n\nOn Android, use a full path inside app storage (e.g. from a created project).');
                 } finally {
                   setState(() => _isOpening = false);
                 }

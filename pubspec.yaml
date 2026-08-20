@@ -14,6 +14,7 @@ dependencies:
   flutter_highlight: ^0.7.0
   http: ^1.2.1
   shared_preferences: ^2.2.3
+  path_provider: ^2.1.0
   uuid: ^4.4.0
 
 dev_dependencies:

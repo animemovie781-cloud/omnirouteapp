@@ -19,6 +19,8 @@ class AIServiceFactory {
         return OllamaService();
       case AIProvider.omniroute:
         return OmnirouteService();
+      case AIProvider.openrouter:
+        return OpenAIService();
     }
   }
 }

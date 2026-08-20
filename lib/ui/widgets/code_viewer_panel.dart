@@ -4,6 +4,8 @@ import 'package:flutter_highlight/flutter_highlight.dart';
 import 'package:flutter_highlight/theme_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/editor_provider.dart';
+import '../../providers/project_provider.dart';
+import 'file_explorer_panel.dart';
 import '../theme/app_theme.dart';
 
 class CodeViewerPanel extends ConsumerStatefulWidget {
@@ -15,6 +17,7 @@ class CodeViewerPanel extends ConsumerStatefulWidget {
 
 class _CodeViewerPanelState extends ConsumerState<CodeViewerPanel> {
   late TextEditingController _codeController;
+  bool _showExplorer = false;
 
   static const List<String> supportedLanguages = [
     'dart',
@@ -48,6 +51,7 @@ class _CodeViewerPanelState extends ConsumerState<CodeViewerPanel> {
   @override
   Widget build(BuildContext context) {
     final editorState = ref.watch(editorProvider);
+    final project = ref.watch(projectProvider).currentProject;
 
     // Keep controller text synchronized if changed outside
     if (_codeController.text != editorState.currentCode && !editorState.isEditing) {
@@ -67,6 +71,16 @@ class _CodeViewerPanelState extends ConsumerState<CodeViewerPanel> {
           ),
           child: Row(
             children: [
+              IconButton(
+                icon: Icon(
+                  Icons.more_vert_rounded,
+                  size: 20,
+                  color: _showExplorer ? AppTheme.primaryAccent : AppTheme.textSecondary,
+                ),
+                tooltip: 'Toggle file explorer',
+                onPressed: () => setState(() => _showExplorer = !_showExplorer),
+              ),
+              const SizedBox(width: 4),
               const Icon(Icons.integration_instructions_rounded, color: AppTheme.primaryAccent, size: 20),
               const SizedBox(width: 8),
               Text(
@@ -138,16 +152,24 @@ class _CodeViewerPanelState extends ConsumerState<CodeViewerPanel> {
           ),
         ),
 
-        // Editor Workspace Body
+        // Editor Workspace Body (with optional file explorer)
         Expanded(
-          child: Container(
-            color: const Color(0xFF0D1117),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Line Numbers Sidebar
-                Container(
-                  width: 44,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_showExplorer && project != null) ...[
+                FileExplorerPanel(project: project),
+                const VerticalDivider(width: 1, color: AppTheme.borderDark),
+              ],
+              Expanded(
+                child: Container(
+                  color: const Color(0xFF0D1117),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Line Numbers Sidebar
+                      Container(
+                        width: 44,
                   color: const Color(0xFF161B22),
                   padding: const EdgeInsets.only(top: 12, right: 8),
                   child: ListView.builder(
@@ -215,6 +237,9 @@ class _CodeViewerPanelState extends ConsumerState<CodeViewerPanel> {
             ),
           ),
         ),
+      ],
+      ),
+    ),
       ],
     );
   }

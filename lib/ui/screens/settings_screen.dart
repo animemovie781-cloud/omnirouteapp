@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/ai_config.dart';
 import '../../providers/settings_provider.dart';
-import '../../services/connection_test_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/connection_status.dart';
 
@@ -165,15 +164,38 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // Connection Test Button
-                  ConnectionStatusWidget(
-                    config: AIModelConfig(
-                      provider: _selectedProvider,
-                      modelName: _modelNameController.text.trim(),
-                      apiKey: _apiKeyController.text.trim(),
-                      baseUrl: _baseUrlController.text.trim(),
+                  // Connection Test Button (shown once an API key is provided)
+                  if (_apiKeyController.text.trim().isNotEmpty &&
+                      _baseUrlController.text.trim().isNotEmpty)
+                    ConnectionStatusWidget(
+                      config: AIModelConfig(
+                        provider: _selectedProvider,
+                        modelName: _modelNameController.text.trim(),
+                        apiKey: _apiKeyController.text.trim(),
+                        baseUrl: _baseUrlController.text.trim(),
+                      ),
+                    )
+                  else
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: AppTheme.cardDark,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: AppTheme.borderDark),
+                      ),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.info_outline_rounded, size: 16, color: AppTheme.textSecondary),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Enter an API key (and Base URL) above to enable Test Connection.',
+                              style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                   const SizedBox(height: 12),
 
                   // Model Selection Dropdown

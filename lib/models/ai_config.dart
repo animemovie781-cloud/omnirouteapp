@@ -4,6 +4,7 @@ enum AIProvider {
   gemini,
   ollama,
   omniroute,
+  openrouter,
 }
 
 extension AIProviderExtension on AIProvider {
@@ -19,6 +20,8 @@ extension AIProviderExtension on AIProvider {
         return 'Ollama (Local)';
       case AIProvider.omniroute:
         return 'Omniroute Gateway';
+      case AIProvider.openrouter:
+        return 'OpenRouter';
     }
   }
 
@@ -34,6 +37,8 @@ extension AIProviderExtension on AIProvider {
         return 'http://localhost:11434/api';
       case AIProvider.omniroute:
         return 'http://localhost:8000/v1';
+      case AIProvider.openrouter:
+        return 'https://openrouter.ai/api/v1';
     }
   }
 
@@ -49,6 +54,13 @@ extension AIProviderExtension on AIProvider {
         return ['codellama', 'llama3', 'mistral', 'deepseek-coder'];
       case AIProvider.omniroute:
         return ['omni/auto', 'omni/best-coding', 'omni/fast'];
+      case AIProvider.openrouter:
+        return [
+          'openai/gpt-4o',
+          'anthropic/claude-3.5-sonnet',
+          'google/gemini-pro-1.5',
+          'meta-llama/llama-3.1-70b-instruct',
+        ];
     }
   }
 }
