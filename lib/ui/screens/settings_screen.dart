@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/ai_config.dart';
 import '../../providers/settings_provider.dart';
+import '../../ui/screens/providers_screen.dart';
+import '../../ui/screens/agents_screen.dart';
+import '../../ui/screens/permissions_screen.dart';
 import '../theme/app_theme.dart';
 import '../widgets/connection_status.dart';
 
@@ -88,7 +91,137 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          // Provider Selection Card
+          // Manage Providers Navigation Card
+          Card(
+            color: AppTheme.cardDark,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const ProvidersScreen()),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(Icons.public_rounded, color: AppTheme.primaryAccent),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Manage Providers',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryAccent,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Configure API keys, base URLs, and provider settings',
+                            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppTheme.textSecondary),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Agents Navigation Card
+          Card(
+            color: AppTheme.cardDark,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const AgentsScreen()),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(Icons.smart_toy_rounded, color: AppTheme.primaryAccent),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Agents',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryAccent,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Custom AI personas and system prompts',
+                            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppTheme.textSecondary),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Permissions Navigation Card
+          Card(
+            color: AppTheme.cardDark,
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const PermissionsScreen()),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Icon(Icons.security_rounded, color: AppTheme.primaryAccent),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Permissions',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppTheme.primaryAccent,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Tool approval rules and defaults',
+                            style: TextStyle(fontSize: 12, color: AppTheme.textSecondary),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios_rounded, size: 16, color: AppTheme.textSecondary),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
           Card(
             color: AppTheme.cardDark,
             child: Padding(

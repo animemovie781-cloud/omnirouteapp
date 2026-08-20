@@ -142,3 +142,24 @@ class AIModelConfig {
     );
   }
 }
+
+extension AIProviderCatalogMapping on AIProvider {
+  static AIProvider? fromCatalogId(String catalogId) {
+    switch (catalogId) {
+      case 'openai':
+        return AIProvider.openai;
+      case 'anthropic':
+        return AIProvider.anthropic;
+      case 'gemini':
+        return AIProvider.gemini;
+      case 'ollama':
+        return AIProvider.ollama;
+      case 'omniroute':
+        return AIProvider.omniroute;
+      case 'openrouter':
+        return AIProvider.openrouter;
+      default:
+        return null;
+    }
+  }
+}

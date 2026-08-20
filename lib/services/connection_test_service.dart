@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/ai_config.dart';
+import '../models/provider_catalog.dart';
+import '../models/provider_models.dart';
+import '../services/provider_auth_helper.dart';
 
 class ConnectionTestResult {
   final bool success;
@@ -37,16 +40,23 @@ class ConnectionTestService {
 
     try {
       late final http.Response response;
+      final catalogEntry = ProviderCatalog.byId(config.provider.name);
+      final headers = ProviderAuthHelper.buildHeaders(
+        catalogEntry ??
+            ProviderCatalogEntry(
+              id: config.provider.name,
+              name: config.provider.displayName,
+              defaultBaseUrl: baseUrl,
+            ),
+        apiKey: config.apiKey.isNotEmpty ? config.apiKey : null,
+      );
 
       if (_openAiCompatible.contains(config.provider)) {
         final url = Uri.parse('$baseUrl/chat/completions');
         response = await client
             .post(
               url,
-              headers: {
-                'Content-Type': 'application/json',
-                if (config.apiKey.isNotEmpty) 'Authorization': 'Bearer ${config.apiKey}',
-              },
+              headers: headers,
               body: jsonEncode({
                 'model': config.modelName.isNotEmpty ? config.modelName : 'gpt-4o-mini',
                 'messages': [
@@ -60,10 +70,7 @@ class ConnectionTestService {
       } else {
         final url = Uri.parse('$baseUrl/models');
         final request = http.Request('GET', url);
-        request.headers.addAll({
-          'Content-Type': 'application/json',
-          if (config.apiKey.isNotEmpty) 'Authorization': 'Bearer ${config.apiKey}',
-        });
+        request.headers.addAll(headers);
         final streamed = await client.send(request).timeout(const Duration(seconds: 15));
         response = await http.Response.fromStream(streamed);
       }
